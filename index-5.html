@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIU Medics - Comprehensive Healthcare & Scan Analysis</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- TOP BAR / HEADER -->
+    <header class="bg-navy-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('ai-assistant')">
+                <div class="bg-teal-500 p-2 rounded-xl text-white shadow-lg shadow-teal-500/30">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight text-white">CIU <span class="text-teal-500">Medics</span></span>
+                    <span class="block text-[10px] text-teal-300 font-medium tracking-widest -mt-1 uppercase">Health & Diagnostics</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex space-x-1 lg:space-x-2 text-sm font-medium">
+                <button onclick="switchTab('ai-assistant')" id="nav-ai-assistant" class="nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-teal-400 bg-slate-800/80">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                    <span>AI & Scan Explainer</span>
+                </button>
+                <button onclick="switchTab('appointments')" id="nav-appointments" class="nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800/50 transition">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    <span>Appointments</span>
+                </button>
+                <button onclick="switchTab('pharmacy')" id="nav-pharmacy" class="nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800/50 transition">
+                    <i data-lucide="pill" class="w-4 h-4"></i>
+                    <span>Pharmacy & Delivery</span>
+                </button>
+                <button onclick="switchTab('tutorials')" id="nav-tutorials" class="nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800/50 transition">
+                    <i data-lucide="video" class="w-4 h-4"></i>
+                    <span>Med Tutorials</span>
+                </button>
+                <button onclick="switchTab('doctor-chat')" id="nav-doctor-chat" class="nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800/50 transition">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span>Direct Doctor Chat</span>
+                </button>
+            </nav>
+
+            <!-- Quick Action / Profile -->
+            <div class="flex items-center space-x-3">
+                <button onclick="triggerEmergencyModal()" class="bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="phone-call" class="w-3.5 h-3.5 animate-pulse"></i>
+                    <span class="hidden sm:inline">Emergency</span>
+                </button>
+                
+                <div class="h-6 w-[1px] bg-slate-700 hidden sm:block"></div>
+
+                <div class="flex items-center space-x-2 pl-1 cursor-pointer" onclick="showToast('Profile: Sarah Jenkins (Patient ID: #88392)')">
+                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm border-2 border-teal-400/30">
+                        SJ
+                    </div>
+                    <div class="hidden lg:block text-left">
+                        <p class="text-xs font-semibold text-white leading-tight">Sarah J.</p>
+                        <p class="text-[10px] text-teal-300">Week 24 • Pregnant</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Sub-bar -->
+        <div class="md:hidden flex overflow-x-auto py-2 px-3 space-x-2 border-t border-slate-800 scrollbar-thin">
+            <button onclick="switchTab('ai-assistant')" id="mobile-nav-ai-assistant" class="mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-teal-400 bg-slate-800">
+                AI & Scans
+            </button>
+            <button onclick="switchTab('appointments')" id="mobile-nav-appointments" class="mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-slate-300">
+                Book Doctor
+            </button>
+            <button onclick="switchTab('pharmacy')" id="mobile-nav-pharmacy" class="mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-slate-300">
+                Pharmacy
+            </button>
+            <button onclick="switchTab('tutorials')" id="mobile-nav-tutorials" class="mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-slate-300">
+                Tutorials
+            </button>
+            <button onclick="switchTab('doctor-chat')" id="mobile-nav-doctor-chat" class="mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-slate-300">
+                Doctor Chat
+            </button>
+        </div>
+    </header>
+
+    <!-- TOAST NOTIFICATION BANNER CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- SECTION 1: AI MEDICAL ASSISTANT & SCAN EXPLAINER -->
+        <section id="tab-ai-assistant" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Panel: Scan Upload & Presets -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col space-y-4">
+                <div>
+                    <h2 class="text-lg font-bold text-navy-900 flex items-center space-x-2">
+                        <i data-lucide="scan-line" class="text-teal-600"></i>
+                        <span>Scan & Ultrasound Reader</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Upload ultrasound or diagnostic reports to receive patient-friendly explanations.</p>
+                </div>
+
+                <!-- Dropzone / File Picker Simulation -->
+                <div class="border-2 border-dashed border-teal-200 bg-teal-50/40 rounded-xl p-5 text-center flex flex-col items-center justify-center space-y-2 hover:border-teal-400 transition cursor-pointer relative" onclick="simulateFileUpload()">
+                    <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
+                        <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-700">Click to upload scan image/PDF</p>
+                        <p class="text-[11px] text-slate-400">Supports PNG, JPG, DICOM, or PDF</p>
+                    </div>
+                    <span class="inline-block px-2.5 py-1 bg-teal-600 text-white text-[10px] font-semibold rounded-full shadow-xs">Select File</span>
+                </div>
+
+                <!-- Preset Quick Scan Demos -->
+                <div>
+                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-2">Or select a sample scan:</label>
+                    <div class="space-y-2">
+                        <button onclick="loadScanPreset('pregnancy')" class="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-teal-500 hover:bg-teal-50/30 flex items-center space-x-3 transition group">
+                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-teal-600 group-hover:bg-teal-100">
+                                <i data-lucide="baby" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-800">24-Week Obstetric Scan</p>
+                                <p class="text-[11px] text-slate-500">Growth, Placenta & Amniotic Fluid</p>
+                            </div>
+                        </button>
+
+                        <button onclick="loadScanPreset('chest-xray')" class="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-teal-500 hover:bg-teal-50/30 flex items-center space-x-3 transition group">
+                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-teal-600 group-hover:bg-teal-100">
+                                <i data-lucide="file-heart" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-800">Chest X-Ray Report</p>
+                                <p class="text-[11px] text-slate-500">Lungs, Heart Outline & Clearance</p>
+                            </div>
+                        </button>
+
+                        <button onclick="loadScanPreset('mri-knee')" class="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-teal-500 hover:bg-teal-50/30 flex items-center space-x-3 transition group">
+                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-teal-600 group-hover:bg-teal-100">
+                                <i data-lucide="bone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-800">Knee Joint MRI</p>
+                                <p class="text-[11px] text-slate-500">ACL, Meniscus & Soft Tissue</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pregnancy Tracker Widget -->
+                <div class="bg-gradient-to-br from-teal-500 to-teal-700 text-white rounded-xl p-4 shadow-sm mt-auto">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium opacity-90">Pregnancy Journey</span>
+                        <span class="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full">Trimester 2</span>
+                    </div>
+                    <div class="mt-2 flex items-baseline space-x-2">
+                        <span class="text-2xl font-extrabold">24 Weeks</span>
+                        <span class="text-xs opacity-80">(Size of an Eggplant 🍆)</span>
+                    </div>
+                    <div class="w-full bg-black/20 h-2 rounded-full mt-3 overflow-hidden">
+                        <div class="bg-white h-full rounded-full" style="width: 60%;"></div>
+                    </div>
+                    <p class="text-[11px] mt-2 opacity-90">Baby is developing taste buds & practicing breathing movements!</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: AI Chat Interactive Conversation -->
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[600px]">
+                <!-- Chat Header -->
+                <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-2xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <div class="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
+                                <i data-lucide="bot" class="w-5 h-5"></i>
+                            </div>
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">CIU AI Medical Assistant</h3>
+                            <p class="text-xs text-slate-500">Trained on Radiology & Medical Terminology</p>
+                        </div>
+                    </div>
+                    <button onclick="clearAiChat()" class="text-xs text-slate-400 hover:text-slate-600 flex items-center space-x-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>Clear Chat</span>
+                    </button>
+                </div>
+
+                <!-- Chat Messages Scroll Area -->
+                <div id="ai-chat-box" class="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin">
+                    <!-- Default AI Greeting -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold shrink-0 mt-1">
+                            AI
+                        </div>
+                        <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs p-3.5 text-xs max-w-[85%] leading-relaxed shadow-xs">
+                            Hello Sarah! 👋 I am your <strong>CIU Medics AI Assistant</strong>. You can ask me any health-related questions, medical term definitions, or select/upload a scan report on the left panel to translate it into plain, easy-to-understand terms. How can I help you today?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <div class="p-3 border-t border-slate-100 bg-white rounded-b-2xl">
+                    <form onsubmit="handleAiChatSubmit(event)" class="flex items-center space-x-2">
+                        <input id="ai-chat-input" type="text" placeholder="Ask about pregnancy terms, medication rules, or scans..." class="flex-1 bg-slate-100 text-xs text-slate-800 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition">
+                        <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-xl transition shadow-sm flex items-center justify-center">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                    <p class="text-[10px] text-slate-400 text-center mt-2">CIU AI provides informative explanations. For severe symptoms, contact our live specialists or emergency hotline.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: DOCTOR & SPECIALIST APPOINTMENTS -->
+        <section id="tab-appointments" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div>
+                    <h2 class="text-xl font-bold text-navy-900">Book Doctor & Specialist Appointments</h2>
+                    <p class="text-xs text-slate-500 mt-1">Connect with verified gynecologists, radiologists, and general physicians.</p>
+                </div>
+                <!-- Specialty Filter -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0">
+                    <button onclick="filterDoctors('all')" class="doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 text-white">All Specialties</button>
+                    <button onclick="filterDoctors('Obstetrics')" class="doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Obstetrics & Pregnancy</button>
+                    <button onclick="filterDoctors('Radiology')" class="doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Radiology</button>
+                    <button onclick="filterDoctors('Pediatrics')" class="doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Pediatrics</button>
+                </div>
+            </div>
+
+            <!-- Doctor Cards Grid -->
+            <div id="doctors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated by JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: PHARMACY & DRUG DELIVERY -->
+        <section id="tab-pharmacy" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left 2 Cols: Drug Catalog & Search -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-navy-900">Pharmacy & Prescription Home Delivery</h2>
+                            <p class="text-xs text-slate-500">Order prescribed prenatal vitamins, supplements, and medications from nearby partner clinics.</p>
+                        </div>
+                        <!-- Search Box -->
+                        <div class="relative w-full sm:w-64">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                            <input type="text" id="drug-search" oninput="renderPharmacyCatalog()" placeholder="Search medication name..." class="w-full bg-slate-100 text-xs pl-9 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drug Grid -->
+                <div id="pharmacy-catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Dynamically Populated -->
+                </div>
+            </div>
+
+            <!-- Right Col: Delivery Address & Cart Checkout -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm h-fit space-y-4">
+                <h3 class="text-base font-bold text-navy-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i data-lucide="truck" class="text-teal-600"></i>
+                    <span>Delivery Details & Cart</span>
+                </h3>
+
+                <!-- Cart Items List -->
+                <div id="cart-items-container" class="space-y-3 min-h-[100px] text-xs text-slate-500 flex flex-col justify-center">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Delivery Address & Clinic Selector -->
+                <div class="space-y-3 pt-3 border-t border-slate-100">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Nearest Partner Clinic/Pharmacy</label>
+                        <select id="selected-clinic" onchange="updateDeliveryFee()" class="w-full text-xs bg-slate-100 border border-slate-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option value="CIU Central Hospital Pharmacy (1.2 km)">CIU Central Hospital Pharmacy (1.2 km)</option>
+                            <option value="MediCare Metro Clinic (3.5 km)">MediCare Metro Clinic (3.5 km)</option>
+                            <option value="St. Jude Maternal Pharmacy (5.0 km)">St. Jude Maternal Pharmacy (5.0 km)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Delivery Address / Pin Location</label>
+                        <div class="relative">
+                            <input type="text" id="delivery-address" value="72 West Kensington Ave, Apt 4B" class="w-full text-xs bg-slate-100 border border-slate-200 rounded-lg p-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-teal-600 absolute right-2.5 top-2.5 cursor-pointer" onclick="showToast('Pinning GPS location...')"></i>
+                        </div>
+                    </div>
+
+                    <!-- Cost Breakdown -->
+                    <div class="bg-slate-50 rounded-xl p-3 space-y-1.5 text-xs">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal" class="font-medium">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Clinic Delivery Fee:</span>
+                            <span id="cart-delivery-fee" class="font-medium">$3.50</span>
+                        </div>
+                        <div class="flex justify-between text-navy-900 font-bold text-sm pt-1.5 border-t border-slate-200">
+                            <span>Total Amount:</span>
+                            <span id="cart-total" class="text-teal-600">$3.50</span>
+                        </div>
+                    </div>
+
+                    <button onclick="checkoutPharmacyOrder()" class="w-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        <span>Confirm & Dispatch Order</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: MEDICAL TUTORIALS & HEALTH EDUCATION -->
+        <section id="tab-tutorials" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div>
+                    <h2 class="text-xl font-bold text-navy-900">Medical Tutorials & Video Guides</h2>
+                    <p class="text-xs text-slate-500 mt-1">Short clinical masterclasses hosted by top certified medical professionals.</p>
+                </div>
+
+                <div class="flex space-x-2">
+                    <button onclick="filterTutorials('all')" class="tutorial-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 text-white">All Videos</button>
+                    <button onclick="filterTutorials('pregnancy')" class="tutorial-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Pregnancy</button>
+                    <button onclick="filterTutorials('first-aid')" class="tutorial-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">First Aid</button>
+                </div>
+            </div>
+
+            <!-- Video Grid -->
+            <div id="tutorials-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: DOCTOR-PATIENT DIRECT MESSAGING -->
+        <section id="tab-doctor-chat" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 grid grid-cols-1 md:grid-cols-3 h-[600px] overflow-hidden">
+            <!-- Left Column: Doctor Selection List -->
+            <div class="border-r border-slate-200 bg-slate-50/50 flex flex-col">
+                <div class="p-4 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-navy-900">Direct Medical Consults</h3>
+                    <p class="text-xs text-slate-500">Chat directly with assigned doctor</p>
+                </div>
+
+                <div class="flex-1 overflow-y-auto divide-y divide-slate-100 scrollbar-thin">
+                    <div onclick="selectDirectDoctor('dr-clara')" class="p-3.5 flex items-center space-x-3 hover:bg-teal-50/50 cursor-pointer bg-teal-50/80 border-l-4 border-teal-600 transition">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150" class="w-10 h-10 rounded-full object-cover">
+                            <span class="w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full absolute bottom-0 right-0"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-baseline">
+                                <h4 class="text-xs font-bold text-slate-800 truncate">Dr. Clara Vance</h4>
+                                <span class="text-[10px] text-slate-400">10:42 AM</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 truncate">Obstetrician • CIU Hospital</p>
+                            <p class="text-[11px] text-teal-700 font-medium truncate mt-0.5">"Your scan looks very healthy..."</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectDirectDoctor('dr-marcus')" class="p-3.5 flex items-center space-x-3 hover:bg-teal-50/50 cursor-pointer transition opacity-75">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150" class="w-10 h-10 rounded-full object-cover">
+                            <span class="w-2.5 h-2.5 bg-slate-300 border-2 border-white rounded-full absolute bottom-0 right-0"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-baseline">
+                                <h4 class="text-xs font-bold text-slate-800 truncate">Dr. Marcus Thorne</h4>
+                                <span class="text-[10px] text-slate-400">Yesterday</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 truncate">Radiologist • Diagnostic Lead</p>
+                            <p class="text-[11px] text-slate-400 truncate">"X-Ray confirmed no hairline fracture."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Area: Direct Conversation Workspace -->
+            <div class="md:col-span-2 flex flex-col h-full bg-white">
+                <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <img id="direct-doc-img" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <h3 id="direct-doc-name" class="text-sm font-bold text-slate-800">Dr. Clara Vance</h3>
+                            <p id="direct-doc-status" class="text-xs text-emerald-600 font-medium flex items-center">
+                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span> Online • Responds in ~5 mins
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="showToast('Initiating encrypted video call with doctor...')" class="bg-teal-50 text-teal-700 hover:bg-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
+                        <i data-lucide="video" class="w-3.5 h-3.5"></i>
+                        <span>Start Teleconsult</span>
+                    </button>
+                </div>
+
+                <!-- Message Stream -->
+                <div id="doctor-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin">
+                    <div class="text-center my-2">
+                        <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full">Encrypted Doctor-Patient Conversation</span>
+                    </div>
+
+                    <!-- Doctor Message -->
+                    <div class="flex items-start space-x-2">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150" class="w-7 h-7 rounded-full object-cover mt-1">
+                        <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs p-3 text-xs max-w-[80%] leading-relaxed">
+                            Hello Sarah! I reviewed your 24-week ultrasound report from yesterday. The fetal heartbeat and growth curves look completely optimal!
+                        </div>
+                    </div>
+
+                    <!-- Patient Message -->
+                    <div class="flex items-start justify-end space-x-2">
+                        <div class="bg-teal-600 text-white rounded-2xl rounded-tr-xs p-3 text-xs max-w-[80%] leading-relaxed">
+                            Thank you Dr. Clara! Should I continue with the prescribed prenatal iron supplements?
+                        </div>
+                    </div>
+
+                    <!-- Doctor Message -->
+                    <div class="flex items-start space-x-2">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150" class="w-7 h-7 rounded-full object-cover mt-1">
+                        <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs p-3 text-xs max-w-[80%] leading-relaxed">
+                            Yes, absolutely. Keep taking them once daily with breakfast. Let me know if you experience any mild heartburn.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Field -->
+                <div class="p-3 border-t border-slate-100">
+                    <form onsubmit="handleDirectDoctorSend(event)" class="flex items-center space-x-2">
+                        <input id="direct-chat-input" type="text" placeholder="Type a message to Dr. Clara Vance..." class="flex-1 bg-slate-100 text-xs text-slate-800 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-xl transition shadow-xs">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- APPOINTMENT BOOKING MODAL -->
+    <div id="booking-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-200">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center space-x-3">
+                <img id="modal-doc-img" src="" class="w-12 h-12 rounded-full object-cover border-2 border-teal-500">
+                <div>
+                    <h3 id="modal-doc-name" class="text-base font-bold text-slate-800">Doctor Name</h3>
+                    <p id="modal-doc-spec" class="text-xs text-teal-600 font-medium">Specialty</p>
+                </div>
+            </div>
+
+            <form onsubmit="confirmAppointment(event)" class="space-y-3 pt-2">
+                <div>
+                    <label class="text-xs font-semibold text-slate-700 block mb-1">Consultation Type</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="border border-slate-200 rounded-lg p-2.5 flex items-center space-x-2 cursor-pointer hover:border-teal-500 text-xs">
+                            <input type="radio" name="consult_type" value="Online Teleconsult" checked class="text-teal-600">
+                            <span>Online Teleconsult</span>
+                        </label>
+                        <label class="border border-slate-200 rounded-lg p-2.5 flex items-center space-x-2 cursor-pointer hover:border-teal-500 text-xs">
+                            <input type="radio" name="consult_type" value="In-Person Clinic Visit" class="text-teal-600">
+                            <span>In-Person Visit</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Select Date</label>
+                        <input type="date" required id="booking-date" class="w-full text-xs bg-slate-100 border border-slate-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700 block mb-1">Select Time</label>
+                        <select id="booking-time" class="w-full text-xs bg-slate-100 border border-slate-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option>09:00 AM</option>
+                            <option>11:30 AM</option>
+                            <option>02:00 PM</option>
+                            <option>04:30 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-700 block mb-1">Reason / Symptoms (Optional)</label>
+                    <textarea rows="2" placeholder="Brief details about your visit or scan questions..." class="w-full text-xs bg-slate-100 border border-slate-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                </div>
+
+                <div class="pt-2 flex space-x-2">
+                    <button type="button" onclick="closeBookingModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl transition">Cancel</button>
+                    <button type="submit" class="w-1/2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- EMERGENCY MODAL -->
+    <div id="emergency-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center space-y-4">
+            <button onclick="closeEmergencyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+                <i data-lucide="phone-call" class="w-8 h-8 animate-bounce"></i>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold text-slate-800">CIU Emergency Hotline</h3>
+                <p class="text-xs text-slate-500 mt-1">If you are experiencing severe bleeding, acute pain, or medical distress, connect immediately.</p>
+            </div>
+
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 font-mono font-bold text-lg">
+                +1 (800) 555-CIU-MED
+            </div>
+
+            <div class="space-y-2">
+                <button onclick="showToast('Dispatching ambulance request to GPS location...'); closeEmergencyModal()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-3 rounded-xl transition shadow-md">
+                    Request Emergency Ambulance
+                </button>
+                <button onclick="closeEmergencyModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-900 text-slate-400 border-t border-slate-800 py-6 text-xs mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center">
+            <p>© 2026 CIU Medics. Certified Health Platform & Intelligent Scan Interpreter.</p>
+            <div class="mt-3 sm:mt-0 flex justify-center space-x-4">
+                <a href="#" onclick="showToast('Privacy Policy: Medical data encrypted under HIPAA guidelines.'); return false;" class="hover:text-teal-400">HIPAA Privacy</a>
+                <a href="#" onclick="showToast('Terms: AI analysis is for educational support.'); return false;" class="hover:text-teal-400">Terms of Care</a>
+                <a href="#" onclick="triggerEmergencyModal(); return false;" class="text-red-400 font-semibold">24/7 Helpline</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DATA STATE
+        const state = {
+            activeTab: 'ai-assistant',
+            doctors: [
+                { id: 'doc-1', name: 'Dr. Clara Vance', specialty: 'Obstetrics', fee: '$45', rating: '4.9', reviews: 128, hospital: 'CIU Central Hospital', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=250' },
+                { id: 'doc-2', name: 'Dr. Marcus Thorne', specialty: 'Radiology', fee: '$50', rating: '4.8', reviews: 94, hospital: 'Advanced Imaging Center', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=250' },
+                { id: 'doc-3', name: 'Dr. Elena Rostova', specialty: 'Pediatrics', fee: '$40', rating: '5.0', reviews: 210, hospital: 'Children Wellness Clinic', img: 'https://images.unsplash.com/photo-1594824813566-78a933758f46?auto=format&fit=crop&q=80&w=250' },
+                { id: 'doc-4', name: 'Dr. David Kim', specialty: 'General Medicine', fee: '$35', rating: '4.7', reviews: 88, hospital: 'Metro General Health', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=250' },
+            ],
+            medications: [
+                { id: 'med-1', name: 'Prenatal Multivitamin & DHA', desc: 'Daily support for maternal & fetal development.', price: 18.50, category: 'Pregnancy', img: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=200' },
+                { id: 'med-2', name: 'Elemental Iron + Folic Acid', desc: 'Prevents maternal anemia during 2nd & 3rd trimester.', price: 12.00, category: 'Pregnancy', img: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&q=80&w=200' },
+                { id: 'med-3', name: 'Calcium + Vitamin D3 Tablets', desc: 'Supports fetal skeletal bone mineral density.', price: 15.00, category: 'Supplements', img: 'https://images.unsplash.com/photo-1550572017-edf706da4663?auto=format&fit=crop&q=80&w=200' },
+                { id: 'med-4', name: 'Antacid Oral Suspension', desc: 'Fast relief from pregnancy heartburn & acid reflux.', price: 8.20, category: 'Digestive', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=200' }
+            ],
+            cart: [],
+            deliveryFee: 3.50,
+            selectedDoctorForBooking: null,
+            tutorials: [
+                { id: 'tut-1', title: 'Understanding Your 2nd Trimester Ultrasound', category: 'pregnancy', duration: '8:45', doctor: 'Dr. Clara Vance', views: '2.4k views', thumb: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=400' },
+                { id: 'tut-2', title: 'Recognizing Early Labor Signs vs Braxton Hicks', category: 'pregnancy', duration: '12:10', doctor: 'Dr. Elena Rostova', views: '5.1k views', thumb: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=400' },
+                { id: 'tut-3', title: 'Infant First Aid & CPR Essentials', category: 'first-aid', duration: '15:20', doctor: 'Dr. David Kim', views: '8.9k views', thumb: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=400' }
+            ]
+        };
+
+        // TAB NAVIGATION
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Nav styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-800/50 transition";
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-3 py-2 rounded-lg flex items-center space-x-2 text-teal-400 bg-slate-800/80";
+            }
+
+            // Mobile nav state
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                btn.className = "mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-slate-300";
+            });
+            const activeMobileNav = document.getElementById(`mobile-nav-${tabId}`);
+            if (activeMobileNav) {
+                activeMobileNav.className = "mobile-nav-btn whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium text-teal-400 bg-slate-800";
+            }
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-navy-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl border border-teal-500/30 flex items-center space-x-2 pointer-events-auto transition transform translate-y-2 opacity-0';
+            toast.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-teal-400 shrink-0"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // AI ASSISTANT CHAT SYSTEM
+        function appendAiMessage(sender, text) {
+            const chatBox = document.getElementById('ai-chat-box');
+            const msgDiv = document.createElement('div');
+
+            if (sender === 'user') {
+                msgDiv.className = 'flex items-start justify-end space-x-2';
+                msgDiv.innerHTML = `
+                    <div class="bg-teal-600 text-white rounded-2xl rounded-tr-xs p-3 text-xs max-w-[80%] leading-relaxed shadow-xs">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                msgDiv.className = 'flex items-start space-x-3';
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold shrink-0 mt-1">
+                        AI
+                    </div>
+                    <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs p-3.5 text-xs max-w-[85%] leading-relaxed shadow-xs space-y-2">
+                        ${text}
+                    </div>
+                `;
+            }
+
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleAiChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('ai-chat-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            appendAiMessage('user', query);
+            input.value = '';
+
+            // Simulated AI reasoning delay
+            setTimeout(() => {
+                generateAiResponse(query);
+            }, 800);
+        }
+
+        function generateAiResponse(query) {
+            const q = query.toLowerCase();
+            let response = "";
+
+            if (q.includes('ultrasound') || q.includes('scan') || q.includes('pregnancy')) {
+                response = `<strong>Obstetric Scan Interpretation Guide:</strong><br>
+                In a typical pregnancy ultrasound:<br>
+                • <strong>BPD (Biparietal Diameter):</strong> Measures baby's head width across both sides.<br>
+                • <strong>FL (Femur Length):</strong> Measures thigh bone growth, indicating height.<br>
+                • <strong>AFI (Amniotic Fluid Index):</strong> Normal ranges between 8-18 cm.<br>
+                <em>If your report lists these in standard percentiles, your baby is developing normally!</em>`;
+            } else if (q.includes('headache') || q.includes('pain') || q.includes('fever')) {
+                response = `For mild symptoms during pregnancy or routine care, rest and hydration are key. However, if you experience high fever above 101°F or severe persistent headaches, please book an appointment with <strong>Dr. Clara Vance</strong> using our Appointments tab!`;
+            } else {
+                response = `Thank you for your question. As your <strong>CIU Medical Assistant</strong>, I analyze medical terminology, scan metrics, and medication guides. To get tailored information, try selecting one of the scan presets on the left or ask about your current prescription!`;
+            }
+
+            appendAiMessage('ai', response);
+        }
+
+        function loadScanPreset(type) {
+            if (type === 'pregnancy') {
+                appendAiMessage('user', 'Uploaded Scan: 24-Week Obstetric Diagnostic Report.pdf');
+                setTimeout(() => {
+                    appendAiMessage('ai', `
+                        <div class="border-b border-slate-200 pb-2 mb-2 font-bold text-teal-800">📊 AI Diagnostic Scan Analysis: 24-Week Fetal Ultrasound</div>
+                        <p><strong>1. Fetal Biometry:</strong> Estimated Fetal Weight (EFW) is approx 600g (50th percentile). Heart rate is steady at 145 BPM.</p>
+                        <p><strong>2. Placental Location:</strong> Anterior, clear of internal os (No Placenta Previa detected).</p>
+                        <p><strong>3. Summary:</strong> Normal fetal anatomy with gestational growth aligning perfectly with 24 weeks!</p>
+                    `);
+                }, 700);
+            } else if (type === 'chest-xray') {
+                appendAiMessage('user', 'Uploaded Scan: Chest Radiography (X-Ray PA View)');
+                setTimeout(() => {
+                    appendAiMessage('ai', `
+                        <div class="border-b border-slate-200 pb-2 mb-2 font-bold text-teal-800">🫁 AI Radiology Breakdown: Chest X-Ray</div>
+                        <p><strong>Lungs:</strong> Clear lung fields bilaterally. No focal consolidation, pleural effusion, or pneumothorax.</p>
+                        <p><strong>Cardiac Shadow:</strong> Cardiothoracic ratio within normal limits (&lt;50%).</p>
+                        <p><strong>Patient Note:</strong> Your lungs appear clear with no signs of pneumonia or fluid build-up.</p>
+                    `);
+                }, 700);
+            } else if (type === 'mri-knee') {
+                appendAiMessage('user', 'Uploaded Scan: Right Knee MRI Scan');
+                setTimeout(() => {
+                    appendAiMessage('ai', `
+                        <div class="border-b border-slate-200 pb-2 mb-2 font-bold text-teal-800">🦴 AI Orthopedic Scan Breakdown: Knee MRI</div>
+                        <p><strong>Ligaments:</strong> Anterior Cruciate Ligament (ACL) and MCL are intact with normal signal intensity.</p>
+                        <p><strong>Meniscus:</strong> Minor grade-1 signal in posterior horn, consistent with mild wear, but no tear.</p>
+                    `);
+                }, 700);
+            }
+        }
+
+        function simulateFileUpload() {
+            showToast('Simulating file analysis...');
+            setTimeout(() => {
+                loadScanPreset('pregnancy');
+            }, 600);
+        }
+
+        function clearAiChat() {
+            document.getElementById('ai-chat-box').innerHTML = '';
+            appendAiMessage('ai', 'Chat history cleared. How can I assist you with your health today?');
+        }
+
+        // DOCTORS & APPOINTMENTS MODULE
+        function renderDoctors(filter = 'all') {
+            const container = document.getElementById('doctors-grid');
+            container.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? state.doctors 
+                : state.doctors.filter(d => d.specialty.toLowerCase() === filter.toLowerCase());
+
+            filtered.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4';
+                card.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <img src="${doc.img}" class="w-16 h-16 rounded-xl object-cover border border-slate-100">
+                        <div>
+                            <span class="inline-block px-2 py-0.5 bg-teal-50 text-teal-700 font-semibold text-[10px] rounded-md mb-1">${doc.specialty}</span>
+                            <h3 class="text-sm font-bold text-slate-800">${doc.name}</h3>
+                            <p class="text-xs text-slate-500">${doc.hospital}</p>
+                            <div class="flex items-center space-x-1 mt-1.5 text-xs">
+                                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                                <span class="font-bold text-slate-700">${doc.rating}</span>
+                                <span class="text-slate-400 text-[11px]">(${doc.reviews} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Consultation Fee</span>
+                            <span class="text-base font-extrabold text-navy-900">${doc.fee}</span>
+                        </div>
+                        <button onclick="openBookingModal('${doc.id}')" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-xs">
+                            Book Visit
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterDoctors(spec) {
+            document.querySelectorAll('.doc-filter-btn').forEach(btn => {
+                btn.className = 'doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200';
+            });
+            event.target.className = 'doc-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 text-white';
+            renderDoctors(spec);
+        }
+
+        function openBookingModal(docId) {
+            const doc = state.doctors.find(d => d.id === docId);
+            state.selectedDoctorForBooking = doc;
+
+            document.getElementById('modal-doc-img').src = doc.img;
+            document.getElementById('modal-doc-name').innerText = doc.name;
+            document.getElementById('modal-doc-spec').innerText = doc.specialty + " • " + doc.hospital;
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
+
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function confirmAppointment(e) {
+            e.preventDefault();
+            closeBookingModal();
+            const doc = state.selectedDoctorForBooking;
+            const date = document.getElementById('booking-date').value;
+            const time = document.getElementById('booking-time').value;
+            
+            showToast(`Appointment confirmed with ${doc.name} on ${date} at ${time}! Check email for video link.`);
+        }
+
+        // PHARMACY & DELIVERY MODULE
+        function renderPharmacyCatalog() {
+            const searchVal = document.getElementById('drug-search').value.toLowerCase();
+            const container = document.getElementById('pharmacy-catalog');
+            container.innerHTML = '';
+
+            const filtered = state.medications.filter(m => 
+                m.name.toLowerCase().includes(searchVal) || m.desc.toLowerCase().includes(searchVal)
+            );
+
+            filtered.forEach(med => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl border border-slate-200/80 p-4 shadow-sm flex items-center space-x-3';
+                card.innerHTML = `
+                    <img src="${med.img}" class="w-16 h-16 rounded-lg object-cover border border-slate-100 shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">${med.category}</span>
+                        <h4 class="text-xs font-bold text-slate-800 truncate">${med.name}</h4>
+                        <p class="text-[11px] text-slate-500 line-clamp-1">${med.desc}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xs font-extrabold text-navy-900">$${med.price.toFixed(2)}</span>
+                            <button onclick="addToCart('${med.id}')" class="bg-teal-50 hover:bg-teal-100 text-teal-700 text-[11px] font-bold px-2.5 py-1 rounded-lg transition border border-teal-200">
+                                + Add
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addToCart(medId) {
+            const med = state.medications.find(m => m.id === medId);
+            const existing = state.cart.find(item => item.id === medId);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                state.cart.push({ ...med, qty: 1 });
+            }
+
+            renderCart();
+            showToast(`Added ${med.name} to cart.`);
+        }
+
+        function removeFromCart(medId) {
+            state.cart = state.cart.filter(item => item.id !== medId);
+            renderCart();
+        }
+
+        function updateDeliveryFee() {
+            const clinic = document.getElementById('selected-clinic').value;
+            if (clinic.includes('1.2 km')) state.deliveryFee = 3.50;
+            else if (clinic.includes('3.5 km')) state.deliveryFee = 5.00;
+            else state.deliveryFee = 7.50;
+
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if (state.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-slate-400">
+                        <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p>Your medicine cart is empty.</p>
+                    </div>
+                `;
+            } else {
+                state.cart.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between border-b border-slate-100 pb-2';
+                    div.innerHTML = `
+                        <div>
+                            <p class="font-semibold text-slate-800">${item.name}</p>
+                            <p class="text-[10px] text-slate-400">Qty: ${item.qty} × $${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-800">$${(item.qty * item.price).toFixed(2)}</span>
+                            <button onclick="removeFromCart('${item.id}')" class="text-red-400 hover:text-red-600">
+                                <i data-lucide="x-circle" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const total = subtotal > 0 ? subtotal + state.deliveryFee : 0;
+
+            document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-delivery-fee').innerText = `$${state.deliveryFee.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+
+            lucide.createIcons();
+        }
+
+        function checkoutPharmacyOrder() {
+            if (state.cart.length === 0) {
+                showToast('Please add items to your cart before ordering.');
+                return;
+            }
+            const address = document.getElementById('delivery-address').value;
+            showToast(`Order placed! Prescriptions dispatched to: ${address}`);
+            state.cart = [];
+            renderCart();
+        }
+
+        // TUTORIALS MODULE
+        function renderTutorials(filter = 'all') {
+            const container = document.getElementById('tutorials-grid');
+            container.innerHTML = '';
+
+            const filtered = filter === 'all'
+                ? state.tutorials
+                : state.tutorials.filter(t => t.category === filter);
+
+            filtered.forEach(tut => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="relative cursor-pointer group" onclick="showToast('Playing tutorial: ${tut.title}')">
+                            <img src="${tut.thumb}" class="w-full h-44 object-cover">
+                            <div class="absolute inset-0 bg-slate-900/30 group-hover:bg-slate-900/10 transition flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-teal-600/90 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition">
+                                    <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
+                                </div>
+                            </div>
+                            <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded">
+                                ${tut.duration}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <span class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">${tut.category}</span>
+                            <h3 class="text-sm font-bold text-slate-800 mt-1 line-clamp-2">${tut.title}</h3>
+                            <p class="text-xs text-slate-500 mt-2 flex items-center">
+                                <i data-lucide="user-check" class="w-3.5 h-3.5 text-teal-600 mr-1.5"></i>
+                                ${tut.doctor}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                        <span>${tut.views}</span>
+                        <button onclick="showToast('Bookmark saved.')" class="hover:text-teal-600 flex items-center space-x-1">
+                            <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+                            <span>Save</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterTutorials(cat) {
+            document.querySelectorAll('.tutorial-filter-btn').forEach(btn => {
+                btn.className = 'tutorial-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200';
+            });
+            event.target.className = 'tutorial-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 text-white';
+            renderTutorials(cat);
+        }
+
+        // DIRECT DOCTOR CHAT MODULE
+        function selectDirectDoctor(docKey) {
+            if (docKey === 'dr-clara') {
+                document.getElementById('direct-doc-name').innerText = "Dr. Clara Vance";
+                document.getElementById('direct-doc-status').innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span> Online • Responds in ~5 mins`;
+                document.getElementById('direct-doc-img').src = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150";
+            } else {
+                document.getElementById('direct-doc-name').innerText = "Dr. Marcus Thorne";
+                document.getElementById('direct-doc-status').innerHTML = `<span class="w-1.5 h-1.5 bg-slate-400 rounded-full mr-1.5"></span> Away • Back at 2:00 PM`;
+                document.getElementById('direct-doc-img').src = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150";
+            }
+        }
+
+        function handleDirectDoctorSend(e) {
+            e.preventDefault();
+            const input = document.getElementById('direct-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const box = document.getElementById('doctor-chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex items-start justify-end space-x-2';
+            msgDiv.innerHTML = `
+                <div class="bg-teal-600 text-white rounded-2xl rounded-tr-xs p-3 text-xs max-w-[80%] leading-relaxed">
+                    ${text}
+                </div>
+            `;
+            box.appendChild(msgDiv);
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            // Simulated response
+            setTimeout(() => {
+                const replyDiv = document.createElement('div');
+                replyDiv.className = 'flex items-start space-x-2';
+                replyDiv.innerHTML = `
+                    <img src="${document.getElementById('direct-doc-img').src}" class="w-7 h-7 rounded-full object-cover mt-1">
+                    <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs p-3 text-xs max-w-[80%] leading-relaxed">
+                        Received your message! I am reviewing your updated details now and will get back to you shortly.
+                    </div>
+                `;
+                box.appendChild(replyDiv);
+                box.scrollTop = box.scrollHeight;
+            }, 1200);
+        }
+
+        // EMERGENCY MODAL CONTROLS
+        function triggerEmergencyModal() {
+            document.getElementById('emergency-modal').classList.remove('hidden');
+        }
+
+        function closeEmergencyModal() {
+            document.getElementById('emergency-modal').classList.add('hidden');
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            lucide.createIcons();
+            renderDoctors();
+            renderPharmacyCatalog();
+            renderCart();
+            renderTutorials();
+        };
+    </script>
+</body>
+</html>
